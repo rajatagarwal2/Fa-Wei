@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html>
+<title>FA-WEI DASHBOARD</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<style>
+/*html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
+*/
+#map {
+        height: 100%;
+        padding-top: 1223px;
+      }
+
+</style>
+<body>
+
+
+<div class="row">
+  <div class="col-md-12 col-lg-12">
+        <div class="w3-top">
+      <div class="w3-bar w3-white w3-card" id="myNavbar">
+        <a href="/" class="w3-bar-item w3-button w3-wide" style="padding: 2px;"><img src="../static/logo.png"></a>
+        <!-- Right-sided navbar links -->
+        <div class="w3-right w3-hide-small">
+          <a href="/" class="w3-bar-item w3-button" style="padding: 16px;">HOME</a>
+          <a href="/logout" class="w3-bar-item w3-button" style="padding: 16px;"><i class="fa fa-user"></i> LOGOUT</a> 
+        </div>
+        <!-- Hide right-floated links on small screens and replace them with a menu icon -->
+
+        <a href="javascript:void(0)" class="w3-bar-item w3-button w3-right w3-hide-large w3-hide-medium" onclick="w3_open()">
+          <i class="fa fa-bars"></i>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+{% if user_type == 'Customer' and login == 'true'%}
+  <div class="row" style="margin-top: 54px;">
+
+    <!-- Navigation Buttons -->
+    <div class="col-md-3 col-lg-3" style="background: white;padding-right: 0px;height: auto;border-right: 1px solid #f2efef">
+      <ul class="nav nav-pills nav-stacked" id="myTabs">
+        <h4 style="padding-left: 13px;font-weight: 600">Welcome, {{ name }}</h4>
+        <li class="active"><a href="#home" data-toggle="pill">Home</a></li>
+        <li><a href="#profile" data-toggle="pill">Strategic Hotspots</a></li>
+        <li><a href="#messages" data-toggle="pill">Stoppage Time Trend</a></li>
+      </ul>
+    </div>
+
+    <!-- Content -->
+    <div class="col-md-9 col-lg-9" style="padding-left: 0px;">
+      <div class="tab-content">
+        <div class="tab-pane active" id="home">
+          <div id="map"></div>
+          <script>
+
+            var citymap = '{{ painting_added }}'.replace(/&#39;/g, '');
+
+            function initMap() {
+              // Create the map.
+              var map = new google.maps.Map(document.getElementById('map'), {
+                zoom: 19,
+                center: {lat: 1.289680792,lng: 103.8510774},
+                mapTypeId: 'satellite'
+              });
+
+              // Construct the circle for each value in citymap.
+              // Note: We scale the area of the circle based on the population.
+              var i;
+              for (i = 0; i < eval(citymap).length; i++) { 
+                var city = eval(citymap)[i];
+
+                if(city.time >= 0 && city.time <=50){
+                  url_image = "../static/white.png"
+                }
+                else if(city.time >= 50 && city.time <= 100){
+                  url_image = "../static/blue.png"
+                }
+                else{
+                  url_image = "../static/red.png"
+                }
+
+
+
+
+
+
+                if(city.center != undefined){
+                  radius = (city.time/10) + 25
+                  var icon = {
+                      url: url_image, // url
+                      scaledSize: new google.maps.Size(radius, radius), // scaled size
+                      origin: new google.maps.Point(0,0), // origin
+                      anchor: new google.maps.Point(0, 0) // anchor
+                  };
+
+                  center = {lat: city.center.lat, lng: city.center.lng}
+
+                  var marker = new google.maps.Marker({
+                      position: center,
+                      map: map,
+                      icon: icon
+                  });
+
+                  var content =  '<h3>Lat: ' + center.lat + '</h3><br>' + '<h3>Lng: ' + center.lng + '</h3><br>' + '<h3>Time: ' + city.time + ' Seconds</h3>'
+                  var infowindow = new google.maps.InfoWindow()
+
+
+                  google.maps.event.addListener(marker,'mouseover', (function(marker,content,infowindow){ 
+                      return function() {
+                          infowindow.setContent(content);
+                          infowindow.open(map,marker);
+                      };
+                  })(marker,content,infowindow));  
+
+
+                  google.maps.event.addListener(marker,'mouseout', (function(marker,content,infowindow){ 
+                      return function() {
+                          infowindow.setContent(content);
+                          infowindow.close(map,marker);
+                      };
+                  })(marker,content,infowindow)); 
+                }
+              }
+            }
+          </script>
+          <script async defer
+          src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDkx1F_E1FH-gxw7cdCppTpU97exiNiKp8&callback=initMap">
+          </script>
+        </div>
+        <div class="tab-pane" id="profile">
+          <div class="row">
+            <div class="col-md-12 col-lg-12">
+              <img src="../static/Strategic_Hotspots.PNG" width="1082px">
+            </div>
+          </div>
+        </div>
+
+        <div class="tab-pane" id="messages">
+          <div class="row">
+            <div class="col-md-12 col-lg-12">
+              <img src="../static/trend.PNG" width="1082px">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{% elif user_type == 'Customer' and login != 'true'%}
+  <div class="row" style="margin-top: 54px;">
+      <div class="col-md-3" style="background: white;padding-right: 0px;height: 1223px;border-right: 1px solid #f2efef">
+        <ul class="nav nav-pills nav-stacked" id="myTabs">
+          <h4 style="padding-left: 13px;font-weight: 600">Welcome, {{ name }}</h4>
+          {% if painting_added == '' %}
+            <li class="active"><a href="#home" data-toggle="pill">Add Painting</a></li>
+            <li><a href="#profile" data-toggle="pill">Analysis</a></li>
+          {% else %}
+            <li><a href="#home" data-toggle="pill">Add Painting</a></li>
+            <li class="active"><a href="#profile" data-toggle="pill">Analysis</a></li>
+          {% endif %}
+        </ul>
+      </div>
+
+
+      <div class="col-md-9" style="padding-left: 0px;">
+        <div class="tab-content">
+
+
+          {% if painting_added == '' %}
+            <div class="tab-pane active" id="home">
+          {% else %}
+            <div class="tab-pane" id="home">
+          {% endif %}
+
+
+
+            <h2 style="text-align: center;">Painting Features</h2>
+
+
+            <div class="row">
+              <div class="col-md-8 col-md-offset-2">
+                <form action="/dashboard" method="post">
+                  
+
+
+                  <div class="form-group row">
+                    <label for="artist" class="col-sm-2 col-form-label">Artist</label>
+                    <div class="col-sm-10">
+                      <select name="artist" id="artist" class="form-control">
+                        <option selected value="NA">Choose...</option>
+                        <option value="Victor Tardieu">Victor Tardieu</option>
+                        <option value="Latiff Mohidin">Latiff Mohidin</option>
+                        <option value="Ahmad Sadali">Ahmad Sadali</option>
+                        <option value="Fadjar Sidik">Fadjar Sidik</option>
+                        <option value="Wakidi">Wakidi</option>
+                        <option value="Raden Saleh">Raden Saleh</option>
+                        <option value="Hendra Gunawan">Hendra Gunawan</option>
+                        <option value="Latiff Mohidin">Latiff Mohidin</option>
+                        <option value="Popo Iskandar">Popo Iskandar</option>
+                        <option value="Pratuang Emjaroen">Pratuang Emjaroen</option>
+                        <option value="Seah Kim Joo">Seah Kim Joo</option>
+                        <option value="Qwek Wee Chiew">Qwek Wee Chiew</option>
+                        <option value="Epic Poem of Malaya">Epic Poem of Malaya</option>
+                        <option value="Juan Luna">Juan Luna</option>
+                        <option value="Koeh Sia Yong">Koeh Sia Yong</option>
+                        <option value="Liu Kang">Liu Kang</option>
+                        <option value="Georgette Chen">Georgette Chen</option>
+                        <option value="Khoo Sui Ho">Khoo Sui Ho</option>
+                        <option value="Alfredo Manriquec">Alfredo Manriquec</option>
+                        <option value="Lee Boon Wang">Lee Boon Wang</option>
+                        <option value="Liu Kang">Liu Kang</option>
+                        <option value="Tay Kok Wee">Tay Kok Wee</option>
+                        <option value="Anak Agung Gede Meregegc">Anak Agung Gede Meregegc</option>
+                        <option value="Nguyen Van Nhan">Nguyen Van Nhan</option>
+                        <option value="Cheong Soo Pieng">Cheong Soo Pieng</option>
+                        <option value="Nguy‡ÈÉn Phan ChÌÁnhc">Nguy‡ÈÉn Phan ChÌÁnhc</option>
+                        <option value="Ong Kim Seng">Ong Kim Seng</option>
+                        <option value="Lim Cheng Hoe">Lim Cheng Hoe</option>
+                        <option value="Robert Wilson Wiber">Robert Wilson Wiber</option>
+                        <option value="Lim Hak Tai">Lim Hak Tai</option>
+                        <option value="Nguyen Gia Tri">Nguyen Gia Tri</option>
+                        <option value="Chen Chong Swee">Chen Chong Swee</option>
+                        <option value="Hernando R. Ocampo">Hernando R. Ocampo</option>
+                        <option value="Loy Chye Chuan">Loy Chye Chuan</option>
+                      </select>
+                    </div>
+                  </div>
+
+
+
+                  <div class="form-group row">
+                    <label for="type_art" class="col-sm-2 col-form-label">Type</label>
+                    <div class="col-sm-10">
+                      <div class="form-check form-check-inline">
+                        <input class="form-check-input" name="type_art" type="radio" id="inlineCheckbox6" value="Oil on Canvas">
+                        <label class="form-check-label" for="inlineCheckbox1">Oil on Canvas</label>
+                      </div>
+                      <div class="form-check form-check-inline">
+                        <input class="form-check-input" name="type_art" type="radio" id="inlineCheckbox7" value="Watercolor">
+                        <label class="form-check-label" for="inlineCheckbox2">Watercolor</label>
+                      </div>
+                      <div class="form-check form-check-inline">
+                        <input class="form-check-input" name="type_art" type="radio" id="inlineCheckbox8" value="Bronze">
+                        <label class="form-check-label" for="inlineCheckbox2">Bronze</label>
+                      </div>
+                      <div class="form-check form-check-inline">
+                        <input class="form-check-input" name="type_art" type="radio" id="inlineCheckbox9" value="Chinese Ink">
+                        <label class="form-check-label" for="inlineCheckbox2">Chinese Ink</label>
+                      </div>
+                      <div class="form-check form-check-inline">
+                        <input class="form-check-input" name="type_art" type="radio" id="inlineCheckbox10" value="Vietnam">
+                        <label class="form-check-label" for="inlineCheckbox2">Lacquer</label>
+                      </div>
+
+                    </div>
+                  </div>
+
+                  <div class="form-group row">
+                    <div class="col-sm-10">
+                      <button type="submit" class="btn btn-primary">ADD</button>
+                    </div>
+                  </div>
+                </form>
+
+
+              </div>
+            </div>
+          
+
+          </div>
+
+         {% if painting_added != '' %}
+            <div class="tab-pane active" id="profile">
+         {% else %}
+            <div class="tab-pane" id="profile">
+         {% endif %}
+
+          {% if painting_added != '' %}
+            <div id="map"></div>
+            <script>
+              var citymap = '{{ painting_added }}'.replace(/&#39;/g, '');
+              function initMap() {
+                // Create the map.
+                var map = new google.maps.Map(document.getElementById('map'), {
+                  zoom: 19,
+                  center: {lat: 1.289680792,lng: 103.8510774},
+                  mapTypeId: 'satellite'
+                });
+
+                // Construct the circle for each value in citymap.
+                // Note: We scale the area of the circle based on the population.
+                var i;
+                for (i = 0; i < eval(citymap).length; i++) { 
+                  var city = eval(citymap)[i];
+                  console.log(city);
+
+                  if(city.time >= 0 && city.time <=3000){
+                    url_image = "../static/white.png"
+                  }
+                  else if(city.time >= 3000 && city.time <= 30000){
+                    url_image = "../static/blue.png"
+                  }
+                  else{
+                    url_image = "../static/red.png"
+                  }
+
+
+                  if(city.center != undefined){
+                    radius = (city.time/10) + 15
+                    var icon = {
+                        url: url_image, // url
+                        scaledSize: new google.maps.Size(radius, radius), // scaled size
+                        origin: new google.maps.Point(0,0), // origin
+                        anchor: new google.maps.Point(0, 0) // anchor
+                    };
+
+                    center = {lat: city.center.lat, lng: city.center.lng}
+
+
+                    var marker = new google.maps.Marker({
+                        position: center,
+                        map: map,
+                        icon: icon
+                    });
+
+                    var content =  '<h3>Lat: ' + center.lat + '</h3><br>' + '<h3>Lng: ' + center.lng + '</h3><br>' + '<h3>Time: ' + city.time + ' Seconds</h3>'
+                    var infowindow = new google.maps.InfoWindow()
+
+
+                    google.maps.event.addListener(marker,'mouseover', (function(marker,content,infowindow){ 
+                        return function() {
+                            infowindow.setContent(content);
+                            infowindow.open(map,marker);
+                        };
+                    })(marker,content,infowindow));  
+
+
+                    google.maps.event.addListener(marker,'mouseout', (function(marker,content,infowindow){ 
+                        return function() {
+                            infowindow.setContent(content);
+                            infowindow.close(map,marker);
+                        };
+                    })(marker,content,infowindow)); 
+                  }
+                }
+              }
+            </script>
+            <script async defer
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDkx1F_E1FH-gxw7cdCppTpU97exiNiKp8&callback=initMap">
+            </script>
+            {% endif %}
+        </div>
+        </div>
+      </div>
+    </div> 
+{% else %}
+  <div class="row" style="margin-top: 54px;">
+      <div class="col-md-3" style="background: white;padding-right: 0px;height: 1223px;border-right: 1px solid #f2efef">
+        <ul class="nav nav-pills nav-stacked" id="myTabs">
+          <h4 style="padding-left: 13px;font-weight: 600">Welcome, {{ name }}</h4>
+          {% if painting_added == '' %}
+            <li class="active"><a href="#home" data-toggle="pill">Add Painting</a></li>
+            <li><a href="#profile" data-toggle="pill">Analysis</a></li>
+          {% else %}
+            <li><a href="#home" data-toggle="pill">Add Painting</a></li>
+            <li class="active"><a href="#profile" data-toggle="pill">Analysis</a></li>
+          {% endif %}
+            <li><a href="#level" data-toggle="pill">Level Analysis</a></li>
+        </ul>
+      </div>
+
+
+      <div class="col-md-9" style="padding-left: 0px;">
+        <div class="tab-content">
+
+
+          {% if painting_added == '' %}
+            <div class="tab-pane active" id="home">
+          {% else %}
+            <div class="tab-pane" id="home">
+          {% endif %}
+
+
+
+            <h2 style="text-align: center;">Painting Features</h2>
+
+
+            <div class="row">
+              <div class="col-md-8 col-md-offset-2">
+                <form action="/dashboard" method="post">
+                  <div class="form-group row">
+                    <label for="title" class="col-sm-2 col-form-label">Title</label>
+                    <div class="col-sm-10">
+                      <input type="text" name="title" class="form-control" id="title" placeholder="Title">
+                    </div>
+                  </div>
+
+
+
+                  <div class="form-group row">
+                    <label for="artist" class="col-sm-2 col-form-label">Artist</label>
+                    <div class="col-sm-10">
+                      <select name="artist" id="artist" class="form-control">
+                        <option selected value="NA">Choose...</option>
+                        <option value="Victor Tardieu">Victor Tardieu</option>
+                        <option value="Latiff Mohidin">Latiff Mohidin</option>
+                        <option value="Ahmad Sadali">Ahmad Sadali</option>
+                        <option value="Fadjar Sidik">Fadjar Sidik</option>
+                        <option value="Wakidi">Wakidi</option>
+                        <option value="Raden Saleh">Raden Saleh</option>
+                        <option value="Hendra Gunawan">Hendra Gunawan</option>
+                        <option value="Latiff Mohidin">Latiff Mohidin</option>
+                        <option value="Popo Iskandar">Popo Iskandar</option>
+                        <option value="Pratuang Emjaroen">Pratuang Emjaroen</option>
+                        <option value="Seah Kim Joo">Seah Kim Joo</option>
+                        <option value="Qwek Wee Chiew">Qwek Wee Chiew</option>
+                        <option value="Epic Poem of Malaya">Epic Poem of Malaya</option>
+                        <option value="Juan Luna">Juan Luna</option>
+                        <option value="Koeh Sia Yong">Koeh Sia Yong</option>
+                        <option value="Liu Kang">Liu Kang</option>
+                        <option value="Georgette Chen">Georgette Chen</option>
+                        <option value="Khoo Sui Ho">Khoo Sui Ho</option>
+                        <option value="Alfredo Manriquec">Alfredo Manriquec</option>
+                        <option value="Lee Boon Wang">Lee Boon Wang</option>
+                        <option value="Liu Kang">Liu Kang</option>
+                        <option value="Tay Kok Wee">Tay Kok Wee</option>
+                        <option value="Anak Agung Gede Meregegc">Anak Agung Gede Meregegc</option>
+                        <option value="Nguyen Van Nhan">Nguyen Van Nhan</option>
+                        <option value="Cheong Soo Pieng">Cheong Soo Pieng</option>
+                        <option value="Nguy‡ÈÉn Phan ChÌÁnhc">Nguy‡ÈÉn Phan ChÌÁnhc</option>
+                        <option value="Ong Kim Seng">Ong Kim Seng</option>
+                        <option value="Lim Cheng Hoe">Lim Cheng Hoe</option>
+                        <option value="Robert Wilson Wiber">Robert Wilson Wiber</option>
+                        <option value="Lim Hak Tai">Lim Hak Tai</option>
+                        <option value="Nguyen Gia Tri">Nguyen Gia Tri</option>
+                        <option value="Chen Chong Swee">Chen Chong Swee</option>
+                        <option value="Hernando R. Ocampo">Hernando R. Ocampo</option>
+                        <option value="Loy Chye Chuan">Loy Chye Chuan</option>
+                      </select>
+                    </div>
+                  </div>
+
+
+
+                  <div class="form-group row">
+                    <label for="category" class="col-sm-2 col-form-label">Category</label>
+                    <div class="col-sm-10">
+                      <div class="form-check form-check-inline">
+                        <input class="form-check-input" name="category" type="radio" id="inlineCheckbox1" value="Painting">
+                        <label class="form-check-label" for="inlineCheckbox1">Painting</label>
+                      </div>
+                      <div class="form-check form-check-inline">
+                        <input class="form-check-input" name="category" type="radio" id="inlineCheckbox2" value="Modern Art">
+                        <label class="form-check-label" for="inlineCheckbox2">Modern Art</label>
+                      </div>
+                    </div>
+                  </div>
+
+
+
+
+
+
+
+
+                  <div class="form-group row">
+                    <label for="year" class="col-sm-2 col-form-label">Year</label>
+                    <div class="col-sm-10">
+                      <input type="number" name="year" class="form-control" id="year" placeholder="2019">
+                    </div>
+                  </div>
+
+                  <div class="form-group row">
+                    <label for="country" class="col-sm-2 col-form-label">Country</label>
+                    <div class="col-sm-10">
+                      <div class="form-check form-check-inline">
+                        <input class="form-check-input" name="country" type="radio" id="inlineCheckbox3" value="Malaysia">
+                        <label class="form-check-label" for="inlineCheckbox1">Malaysia</label>
+                      </div>
+                      <div class="form-check form-check-inline">
+                        <input class="form-check-input" name="country" type="radio" id="inlineCheckbox4" value="Indonesia">
+                        <label class="form-check-label" for="inlineCheckbox2">Indonesia</label>
+                      </div>
+                      <div class="form-check form-check-inline">
+                        <input class="form-check-input" name="country" type="radio" id="inlineCheckbox5" value="Vietnam">
+                        <label class="form-check-label" for="inlineCheckbox2">Vietnam</label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label for="type_art" class="col-sm-2 col-form-label">Type</label>
+                    <div class="col-sm-10">
+                      <div class="form-check form-check-inline">
+                        <input class="form-check-input" name="type_art" type="radio" id="inlineCheckbox6" value="Oil on Canvas">
+                        <label class="form-check-label" for="inlineCheckbox1">Oil on Canvas</label>
+                      </div>
+                      <div class="form-check form-check-inline">
+                        <input class="form-check-input" name="type_art" type="radio" id="inlineCheckbox7" value="Watercolor">
+                        <label class="form-check-label" for="inlineCheckbox2">Watercolor</label>
+                      </div>
+                      <div class="form-check form-check-inline">
+                        <input class="form-check-input" name="type_art" type="radio" id="inlineCheckbox8" value="Bronze">
+                        <label class="form-check-label" for="inlineCheckbox2">Bronze</label>
+                      </div>
+                      <div class="form-check form-check-inline">
+                        <input class="form-check-input" name="type_art" type="radio" id="inlineCheckbox9" value="Chinese Ink">
+                        <label class="form-check-label" for="inlineCheckbox2">Chinese Ink</label>
+                      </div>
+                      <div class="form-check form-check-inline">
+                        <input class="form-check-input" name="type_art" type="radio" id="inlineCheckbox10" value="Vietnam">
+                        <label class="form-check-label" for="inlineCheckbox2">Lacquer</label>
+                      </div>
+
+                    </div>
+                  </div>
+
+                  <div class="form-group row">
+                    <div class="col-sm-10">
+                      <button type="submit" class="btn btn-primary">ADD</button>
+                    </div>
+                  </div>
+                </form>
+
+
+              </div>
+            </div>
+          
+
+          </div>
+
+         {% if painting_added != '' %}
+            <div class="tab-pane active" id="profile">
+         {% else %}
+            <div class="tab-pane" id="profile">
+         {% endif %}
+
+          {% if painting_added != '' %}
+            <div id="map"></div>
+            <script>
+              var citymap = '{{ painting_added }}'.replace(/&#39;/g, '');
+              function initMap() {
+                // Create the map.
+                var map = new google.maps.Map(document.getElementById('map'), {
+                  zoom: 19,
+                  center: {lat: 1.289680792,lng: 103.8510774},
+                  mapTypeId: 'satellite'
+                });
+
+                // Construct the circle for each value in citymap.
+                // Note: We scale the area of the circle based on the population.
+                var i;
+                for (i = 0; i < eval(citymap).length; i++) { 
+                  var city = eval(citymap)[i];
+                  console.log(city);
+
+                  if(city.time >= 0 && city.time <=3000){
+                    url_image = "../static/white.png"
+                  }
+                  else if(city.time >= 3000 && city.time <= 30000){
+                    url_image = "../static/blue.png"
+                  }
+                  else{
+                    url_image = "../static/red.png"
+                  }
+
+
+                  if(city.center != undefined){
+                    radius = (city.time/10) + 15
+                    var icon = {
+                        url: url_image, // url
+                        scaledSize: new google.maps.Size(radius, radius), // scaled size
+                        origin: new google.maps.Point(0,0), // origin
+                        anchor: new google.maps.Point(0, 0) // anchor
+                    };
+
+                    center = {lat: city.center.lat, lng: city.center.lng}
+
+
+                    var marker = new google.maps.Marker({
+                        position: center,
+                        map: map,
+                        icon: icon
+                    });
+
+                    var content =  '<h3>Lat: ' + center.lat + '</h3><br>' + '<h3>Lng: ' + center.lng + '</h3><br>' + '<h3>Time: ' + city.time + ' Seconds</h3>'
+                    var infowindow = new google.maps.InfoWindow()
+
+
+                    google.maps.event.addListener(marker,'mouseover', (function(marker,content,infowindow){ 
+                        return function() {
+                            infowindow.setContent(content);
+                            infowindow.open(map,marker);
+                        };
+                    })(marker,content,infowindow));  
+
+
+                    google.maps.event.addListener(marker,'mouseout', (function(marker,content,infowindow){ 
+                        return function() {
+                            infowindow.setContent(content);
+                            infowindow.close(map,marker);
+                        };
+                    })(marker,content,infowindow)); 
+                  }
+                }
+              }
+            </script>
+            <script async defer
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDkx1F_E1FH-gxw7cdCppTpU97exiNiKp8&callback=initMap">
+            </script>
+
+{% endif %}
+
+
+
+
+
+
+
+
+
+
+       </div>
+       <div class="tab-pane" id="level">
+          <div class="row">
+            <div class="col-md-12">
+              <h4 style="text-align: center">Level 1</h4>
+              <img src="../static/Level1.png" width="1082px">
+            </div>
+          </div>
+          <hr>
+          <div class="row">
+            <div class="col-md-12">
+              <h4 style="text-align: center">Level B1</h4>
+              <img src="../static/LevelB1.png" width="1082px">
+            </div>
+          </div>
+          <hr>
+          <div class="row">
+            <div class="col-md-12">
+              <h4 style="text-align: center">Level 5</h4>
+              <img src="../static/Level5.png" width="1082px">
+            </div>
+          </div>
+       </div>
+        </div>
+      </div>
+    </div>   
+{% endif %}
+
+</body>
+</html>

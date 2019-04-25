@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+	<head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Sign In Form</title>
+        <link rel="stylesheet" href="css/normalize.css">
+        <link href='https://fonts.googleapis.com/css?family=Nunito:400,300' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+		<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <link rel="stylesheet" href="../static/css/register.css">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+	</head>
+	<style>
+		body,h1,h2,h3,h4,h5,h6 {font-family: "Raleway", sans-serif}
+
+		body, html {
+		  height: 100%;
+		  line-height: 1.8;
+		}
+
+		/* Full height image header */
+		.bgimg-1 {
+		  background-position: center;
+		  background-size: cover;
+		  background-image: url("../static/Devices.png");
+		  min-height: 100%;
+		  background-size: 884Px;
+		  background-repeat: no-repeat;
+		}
+
+		.w3-bar .w3-button {
+		  padding: 16px;
+		}
+	</style>
+    <body>
+
+    <div class="w3-top">
+	  <div class="w3-bar w3-white w3-card" id="myNavbar">
+	    <a href="/" class="w3-bar-item w3-button w3-wide" style="padding: 2px;"><img src="../static/logo.png"></a>
+	    <!-- Right-sided navbar links -->
+	    <div class="w3-right w3-hide-small">
+	      <a href="/" class="w3-bar-item w3-button">HOME</a>
+	      <a href="/dashboard" class="w3-bar-item w3-button"><i class="fa fa-user"></i> DASHBOARD</a> 
+	      <a href="/register" class="w3-bar-item w3-button"><i class="fa fa-user"></i> REGISTER</a>
+	      <a href="/login" class="w3-bar-item w3-button"><i class="fa fa-user"></i> LOGIN</a> 
+	    </div>
+	    <!-- Hide right-floated links on small screens and replace them with a menu icon -->
+
+	    <a href="javascript:void(0)" class="w3-bar-item w3-button w3-right w3-hide-large w3-hide-medium" onclick="w3_open()">
+	      <i class="fa fa-bars"></i>
+	    </a>
+	  </div>
+	</div>
+
+	<!-- Sidebar on small screens when clicking the menu icon -->
+	<nav class="w3-sidebar w3-bar-block w3-black w3-card w3-animate-left w3-hide-medium w3-hide-large" style="display:none" id="mySidebar">
+	  <a href="javascript:void(0)" onclick="w3_close()" class="w3-bar-item w3-button w3-large w3-padding-16">Close ×</a>
+	  <a href="/" onclick="w3_close()" class="w3-bar-item w3-button">HOME</a>
+	  <a href="/dashboard" onclick="w3_close()" class="w3-bar-item w3-button">DASHBOARD</a>
+	  <a href="/register" onclick="w3_close()" class="w3-bar-item w3-button">REGISTER</a>
+	  <a href="/login" onclick="w3_close()" class="w3-bar-item w3-button">LOGIN</a>
+	</nav>
+
+      
+      
+        
+       	<ul class="nav nav-tabs" style="margin-top: 58px">
+			<li class="active"><a data-toggle="tab" href="#home" style="color: black;font-size: 17px;"><b>MANAGEMENT</b></a></li>
+			<li><a data-toggle="tab" href="#menu1" style="color: black;font-size: 17px;"><b>CUSTOMER</b></a></li>
+		</ul>
+
+		<div class="tab-content" style="padding: 11px 0px 11px 0px;">
+  			<div id="home" class="tab-pane fade in active">
+  				
+        		<form action="/login" method="post" style="margin-top: 81px;">
+        			<h1>Sign In</h1>
+		        <fieldset>
+		          <legend><span class="number">1</span>Your basic info</legend>
+		          <label for="mail">Email:</label>
+		          {{ form.email }}
+		          
+		          <label for="password">Password:</label>
+		          {{ form.password }}
+		        </fieldset>
+		        {{ form.hidden_tag() }}
+		        <button type="submit">Sign In</button>
+		    </form>
+		    </div>
+		    <div id="menu1" class="tab-pane fade">
+		    	
+		    	<form action="/login" method="post" style="margin-top: 81px;">
+		    		<h1>Sign In</h1>
+		        <fieldset>
+		          <legend><span class="number">1</span>Your basic info</legend>
+		          <label for="mail">Email:</label>
+		          {{ form.email }}
+		          
+		          <label for="password">Password:</label>
+		          {{ form.password }}
+		        </fieldset>
+		        {{ form.hidden_tag() }}
+		        <button type="submit">Sign In</button>
+		         </form>
+		    </div>
+     
+      
+    </body>
+</html>
